@@ -24,16 +24,18 @@ const App = memo(function App() {
   const headerDark = useSelector((state) => state.ui.headerDark)
   const isHomePage = location.pathname === '/home'
   const isProjectsPage = location.pathname === '/projects'
+  const isAboutPage = location.pathname === '/about'
 
   // 라우트 변경 시 헤더 상태 리셋
   useEffect(() => {
     dispatch(setHeaderDark(isProjectsPage))
-    if (isHomePage) {
+    if (isHomePage || isAboutPage) {
       dispatch(setHeaderVisible(false))
     }
-  }, [location.pathname, dispatch, isHomePage, isProjectsPage])
+  }, [location.pathname, dispatch, isHomePage, isProjectsPage, isAboutPage])
 
-  const showHeader = isHomePage ? headerVisible : true
+  // home·about 페이지는 headerVisible로 제어, 나머지는 항상 표시
+  const showHeader = (isHomePage || isAboutPage) ? headerVisible : true
 
   return (
     <>

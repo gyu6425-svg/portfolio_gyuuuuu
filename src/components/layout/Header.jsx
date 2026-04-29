@@ -64,6 +64,7 @@ export const Header = memo(function Header() {
                         <Link
                             key={path}
                             to={path}
+                            data-nav-item={label.toLowerCase()}
                             style={{
                                 ...chipStyle,
                                 color: isActive ? '#DB6C1B' : chipStyle.color,
