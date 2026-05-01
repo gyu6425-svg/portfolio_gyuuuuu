@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -94,148 +94,150 @@ export default function AboutPage() {
     const learningSubRef = useRef(null);
     const learningPhotoRefs = useRef([]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         dispatch(setHeaderVisible(false));
         dispatch(setHeaderDark(false));
 
-        let st1 = null;
-        let st2 = null;
-        let st3 = null;
+        // scrollTo: paint 전에 즉시 리셋 (child → parent 실행 순서 문제 해결)
+        window.scrollTo(0, 0);
+
+        let ctx = null;
         let rafId = null;
 
+        // RAF: 브라우저가 scroll=0으로 레이아웃 정착 후 측정
         rafId = requestAnimationFrame(() => {
-            // --- Hero animation ---
-            const navEl = document.querySelector('[data-nav-item="about"]');
-            const aboutEl = aboutRef.current;
-            if (!navEl || !aboutEl) return;
+            ctx = gsap.context(() => {
+                // --- Hero animation ---
+                const navEl = document.querySelector('[data-nav-item="about"]');
+                const aboutEl = aboutRef.current;
+                if (!navEl || !aboutEl) return;
 
-            const navRect = navEl.getBoundingClientRect();
-            const aboutRect = aboutEl.getBoundingClientRect();
+                const navRect = navEl.getBoundingClientRect();
+                const aboutRect = aboutEl.getBoundingClientRect();
 
-            const navCX = navRect.left + navRect.width / 2;
-            const navCY = navRect.top + HEADER_HIDDEN_OFFSET + navRect.height / 2;
-            const aboutCX = aboutRect.left + aboutRect.width / 2;
-            const aboutCY = aboutRect.top + aboutRect.height / 2;
+                const navCX = navRect.left + navRect.width / 2;
+                const navCY = navRect.top + HEADER_HIDDEN_OFFSET + navRect.height / 2;
 
-            const dx = navCX - aboutCX;
-            const dy = navCY - aboutCY;
-            const scaleFactor = navRect.height / aboutRect.height;
+                // 스크롤·헤더 상태와 무관하게 항상 뷰포트 중심값 사용
+                // → dy 항상 음수(위쪽) 보장
+                const aboutCX = window.innerWidth / 2;
+                const aboutCY = window.innerHeight / 2;
 
-            const tl1 = gsap.timeline({ paused: true });
-            tl1.to(
-                aboutEl,
-                {
-                    x: dx,
-                    y: dy,
-                    scale: scaleFactor,
-                    color: '#DB6C1B',
-                    ease: 'power1.inOut',
-                    duration: 1,
-                },
-                0
-            );
-            tl1.to(meRef.current, { opacity: 0, ease: 'power1.in', duration: 0.4 }, 0);
+                const dx = navCX - aboutCX;
+                const dy = navCY - aboutCY;
+                const scaleFactor = navRect.height / aboutRect.height;
 
-            st1 = ScrollTrigger.create({
-                trigger: wrapperRef.current,
-                start: 'top top',
-                end: '+=100%',
-                scrub: 1,
-                pin: true,
-                animation: tl1,
-                onUpdate: (self) => {
-                    if (self.progress >= 0.97) {
-                        dispatch(setHeaderVisible(true));
-                    } else {
-                        dispatch(setHeaderVisible(false));
-                    }
-                },
-            });
+                const tl1 = gsap.timeline({ paused: true });
+                tl1.to(
+                    aboutEl,
+                    {
+                        x: dx,
+                        y: dy,
+                        scale: scaleFactor,
+                        color: '#DB6C1B',
+                        ease: 'power1.inOut',
+                        duration: 1,
+                    },
+                    0
+                );
+                tl1.to(meRef.current, { opacity: 0, ease: 'power1.in', duration: 0.4 }, 0);
 
-            // --- Interests animation ---
-            const photos = PHOTO_CONFIGS.map((_, i) => photoRefs.current[i]).filter(Boolean);
-            if (photos.length > 0 && interestsRef.current) {
-                photos.forEach((photo, i) => {
-                    gsap.set(photo, {
-                        opacity: 0,
-                        y: 80,
-                        zIndex: i + 1,
+                ScrollTrigger.create({
+                    trigger: wrapperRef.current,
+                    start: 'top top',
+                    end: '+=100%',
+                    scrub: 1,
+                    pin: true,
+                    animation: tl1,
+                    onUpdate: (self) => {
+                        if (self.progress >= 0.97) {
+                            dispatch(setHeaderVisible(true));
+                        } else {
+                            dispatch(setHeaderVisible(false));
+                        }
+                    },
+                });
+
+                // --- Interests animation ---
+                const photos = PHOTO_CONFIGS.map((_, i) => photoRefs.current[i]).filter(Boolean);
+                if (photos.length > 0 && interestsRef.current) {
+                    photos.forEach((photo, i) => {
+                        gsap.set(photo, {
+                            opacity: 0,
+                            y: 80,
+                            zIndex: i + 1,
+                        });
                     });
-                });
 
-                const tl2 = gsap.timeline({ paused: true });
-                photos.forEach((photo, i) => {
-                    tl2.to(
-                        photo,
-                        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
-                        i * 0.85
-                    );
-                });
+                    const tl2 = gsap.timeline({ paused: true });
+                    photos.forEach((photo, i) => {
+                        tl2.to(
+                            photo,
+                            { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
+                            i * 0.85
+                        );
+                    });
 
-                st2 = ScrollTrigger.create({
-                    trigger: interestsRef.current,
-                    start: 'top top',
-                    end: '+=500%',
-                    pin: true,
-                    scrub: 1,
-                    animation: tl2,
-                });
-            }
+                    ScrollTrigger.create({
+                        trigger: interestsRef.current,
+                        start: 'top top',
+                        end: '+=500%',
+                        pin: true,
+                        scrub: 1,
+                        animation: tl2,
+                    });
+                }
 
-            // --- Learning by Doing animation ---
-            const titleEl = learningTitleRef.current;
-            const subEl = learningSubRef.current;
-            const lPhotos = LEARNING_PHOTOS.map((_, i) => learningPhotoRefs.current[i]).filter(
-                Boolean
-            );
+                // --- Learning by Doing animation ---
+                const titleEl = learningTitleRef.current;
+                const subEl = learningSubRef.current;
+                const lPhotos = LEARNING_PHOTOS.map((_, i) => learningPhotoRefs.current[i]).filter(
+                    Boolean
+                );
 
-            if (titleEl && subEl && learningRef.current) {
-                const vw = window.innerWidth;
-                const vh = window.innerHeight;
-                const stagger = 1.5; // 각 사진 시작 간격
-                const photoDuration = 3; // 한 사진이 화면 아래→위 통과하는 시간
+                if (titleEl && subEl && learningRef.current) {
+                    const vw = window.innerWidth;
+                    const vh = window.innerHeight;
+                    const stagger = 1.5;
+                    const photoDuration = 3;
 
-                gsap.set(titleEl, { x: -vw * 1.5 });
-                gsap.set(subEl, { x: vw * 1.5 });
-                // 모든 사진을 화면 아래에 대기
-                lPhotos.forEach((photoEl) => {
-                    gsap.set(photoEl, { y: vh });
-                });
+                    gsap.set(titleEl, { x: -vw * 1.5 });
+                    gsap.set(subEl, { x: vw * 1.5 });
+                    lPhotos.forEach((photoEl) => {
+                        gsap.set(photoEl, { y: vh });
+                    });
 
-                const tl3 = gsap.timeline({ paused: true });
+                    const tl3 = gsap.timeline({ paused: true });
 
-                // Phase 1: 텍스트가 양쪽에서 등장
-                tl3.to(titleEl, { x: 0, duration: 1, ease: 'power2.inOut' }, 0);
-                tl3.to(subEl, { x: 0, duration: 1, ease: 'power2.inOut' }, 0);
+                    tl3.to(titleEl, { x: 0, duration: 1, ease: 'power2.inOut' }, 0);
+                    tl3.to(subEl, { x: 0, duration: 1, ease: 'power2.inOut' }, 0);
 
-                // Phase 2: 사진들이 아래→위로 통과 (교차하며 지나감)
-                lPhotos.forEach((photoEl, i) => {
-                    const photoH = LEARNING_PHOTOS[i].h;
-                    tl3.fromTo(
-                        photoEl,
-                        { y: vh },
-                        { y: -photoH, duration: photoDuration, ease: 'none' },
-                        1.5 + i * stagger
-                    );
-                });
+                    lPhotos.forEach((photoEl, i) => {
+                        const photoH = LEARNING_PHOTOS[i].h;
+                        tl3.fromTo(
+                            photoEl,
+                            { y: vh },
+                            { y: -photoH, duration: photoDuration, ease: 'none' },
+                            1.5 + i * stagger
+                        );
+                    });
 
-                const totalDur = 1.5 + (lPhotos.length - 1) * stagger + photoDuration;
-                st3 = ScrollTrigger.create({
-                    trigger: learningRef.current,
-                    start: 'top top',
-                    end: `+=${Math.round(totalDur * 100)}%`,
-                    pin: true,
-                    scrub: 1,
-                    animation: tl3,
-                });
-            }
-        });
+                    const totalDur = 1.5 + (lPhotos.length - 1) * stagger + photoDuration;
+                    ScrollTrigger.create({
+                        trigger: learningRef.current,
+                        start: 'top top',
+                        end: `+=${Math.round(totalDur * 100)}%`,
+                        pin: true,
+                        scrub: 1,
+                        animation: tl3,
+                    });
+                }
+            }); // gsap.context 닫기
+        }); // requestAnimationFrame 닫기
 
         return () => {
-            if (rafId) cancelAnimationFrame(rafId);
-            if (st1) st1.kill();
-            if (st2) st2.kill();
-            if (st3) st3.kill();
+            cancelAnimationFrame(rafId);
+            if (ctx) ctx.revert();
         };
     }, [dispatch]);
 

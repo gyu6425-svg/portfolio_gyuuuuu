@@ -1,8 +1,12 @@
-import { lazy, Suspense, memo, useEffect } from 'react'
+import { lazy, Suspense, memo, useEffect, useLayoutEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Header } from './components/layout/Header'
 import { setHeaderVisible, setHeaderDark } from './store/slices/uiSlice'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const HomePage = lazy(() => import('./pages/HomePage'))
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'))
@@ -25,6 +29,12 @@ const App = memo(function App() {
   const isHomePage = location.pathname === '/home'
   const isProjectsPage = location.pathname === '/projects'
   const isAboutPage = location.pathname === '/about'
+
+  // 라우트 변경 시 ScrollTrigger 전부 정리 + 스크롤 초기화 (useEffect보다 먼저 실행)
+  useLayoutEffect(() => {
+    ScrollTrigger.getAll().forEach((st) => st.kill())
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
   // 라우트 변경 시 헤더 상태 리셋
   useEffect(() => {
