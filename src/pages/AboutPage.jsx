@@ -82,6 +82,16 @@ const LEARNING_PHOTOS = [
     },
 ];
 
+const SKILLS = [
+    { label: 'HTML', img: '/images/about/html.png' },
+    { label: 'CSS', img: '/images/about/css.png' },
+    { label: 'JavaScript', img: '/images/about/js.png' },
+    { label: 'TypeScript', img: '/images/about/ts.png' },
+    { label: 'React', img: '/images/about/react.png' },
+    { label: 'FIgma', img: '/images/about/figma.png' },
+    { label: 'PhotoShop', img: '/images/about/ps.png' },
+];
+
 export default function AboutPage() {
     const dispatch = useDispatch();
     const wrapperRef = useRef(null);
@@ -93,6 +103,9 @@ export default function AboutPage() {
     const learningTitleRef = useRef(null);
     const learningSubRef = useRef(null);
     const learningPhotoRefs = useRef([]);
+    const skillsRef = useRef(null);
+    const skillsTitleRef = useRef(null);
+    const skillsIconRefs = useRef([]);
 
     useLayoutEffect(() => {
         dispatch(setHeaderVisible(false));
@@ -232,6 +245,36 @@ export default function AboutPage() {
                         animation: tl3,
                     });
                 }
+
+                // --- Skills section animation ---
+                const skillsTitleEl = skillsTitleRef.current;
+                const skillIcons = SKILLS.map((_, i) => skillsIconRefs.current[i]).filter(Boolean);
+
+                if (skillsTitleEl && skillsRef.current) {
+                    gsap.set(skillsTitleEl, { y: 50, opacity: 0 });
+                    if (skillIcons.length > 0) {
+                        gsap.set(skillIcons, { y: 70, opacity: 0 });
+                    }
+
+                    const tl4 = gsap.timeline({
+                        scrollTrigger: {
+                            trigger: skillsRef.current,
+                            start: 'top 75%',
+                            toggleActions: 'play none none none',
+                        },
+                    });
+
+                    tl4.to(skillsTitleEl, {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.9,
+                        ease: 'power3.out',
+                    }).to(
+                        skillIcons,
+                        { y: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.4)', stagger: 0.07 },
+                        '-=0.3'
+                    );
+                }
             }); // gsap.context 닫기
         }); // requestAnimationFrame 닫기
 
@@ -322,7 +365,7 @@ export default function AboutPage() {
                         height: '100%',
                         display: 'flex',
                         flexDirection: 'column',
-                        padding: '80px 0 60px',
+                        padding: '120px 0 60px',
                         boxSizing: 'border-box',
                     }}
                 >
@@ -549,6 +592,90 @@ export default function AboutPage() {
                         </div>
                     </div>
                 ))}
+            </section>
+
+            {/* Skills section */}
+            <section
+                ref={skillsRef}
+                style={{
+                    width: '100%',
+                    minHeight: '100vh',
+                    background: '#fff',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '108px',
+                }}
+            >
+                <h2
+                    ref={skillsTitleRef}
+                    style={{
+                        fontFamily: FONT,
+                        fontSize: '100px',
+                        fontWeight: 500,
+                        color: '#000000',
+                        lineHeight: 'normal',
+                        letterSpacing: 0,
+                        margin: 0,
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                        marginRight: 520,
+                    }}
+                >
+                    UI/UX PLANNING & DESIGN
+                    <br />
+                    FRONT-END DEVELOPMENT
+                </h2>
+
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        gap: '64px',
+                    }}
+                >
+                    {SKILLS.map((skill, i) => (
+                        <div
+                            key={i}
+                            ref={(el) => {
+                                skillsIconRefs.current[i] = el;
+                            }}
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '14px',
+                            }}
+                        >
+                            <img
+                                src={skill.img}
+                                alt={skill.label}
+                                style={{
+                                    width: '100px',
+                                    height: '100px',
+                                    objectFit: 'contain',
+                                    display: 'block',
+                                    userSelect: 'none',
+                                    pointerEvents: 'none',
+                                }}
+                                draggable={false}
+                            />
+                            <span
+                                style={{
+                                    fontFamily: FONT,
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    color: '#DB6C1B',
+                                    lineHeight: 'normal',
+                                    letterSpacing: 0,
+                                }}
+                            >
+                                {skill.label}
+                            </span>
+                        </div>
+                    ))}
+                </div>
             </section>
         </>
     );
