@@ -30,9 +30,9 @@ const App = memo(function App() {
   const isProjectsPage = location.pathname === '/projects'
   const isAboutPage = location.pathname === '/about'
 
-  // 라우트 변경 시 ScrollTrigger 전부 정리 + 스크롤 초기화 (useEffect보다 먼저 실행)
+  // 라우트 변경 시 스크롤 초기화
+  // ST 정리는 각 페이지의 ctx.revert()가 담당 — 여기서 kill하면 자식 페이지가 새로 만든 ST까지 죽임
   useLayoutEffect(() => {
-    ScrollTrigger.getAll().forEach((st) => st.kill())
     window.scrollTo(0, 0)
   }, [location.pathname])
 

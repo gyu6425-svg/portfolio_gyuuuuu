@@ -111,177 +111,168 @@ export default function AboutPage() {
         dispatch(setHeaderVisible(false));
         dispatch(setHeaderDark(false));
 
-        // scrollTo: paint 전에 즉시 리셋 (child → parent 실행 순서 문제 해결)
+        // useLayoutEffect: paint 전 동기 실행 → scroll=0 보장 상태에서 직접 GSAP 초기화
         window.scrollTo(0, 0);
 
-        let ctx = null;
-        let rafId = null;
+        const ctx = gsap.context(() => {
+            // --- Hero animation ---
+            const navEl = document.querySelector('[data-nav-item="about"]');
+            const aboutEl = aboutRef.current;
+            if (!navEl || !aboutEl) return;
 
-        // RAF: 브라우저가 scroll=0으로 레이아웃 정착 후 측정
-        rafId = requestAnimationFrame(() => {
-            ctx = gsap.context(() => {
-                // --- Hero animation ---
-                const navEl = document.querySelector('[data-nav-item="about"]');
-                const aboutEl = aboutRef.current;
-                if (!navEl || !aboutEl) return;
+            const navRect = navEl.getBoundingClientRect();
+            const aboutRect = aboutEl.getBoundingClientRect();
 
-                const navRect = navEl.getBoundingClientRect();
-                const aboutRect = aboutEl.getBoundingClientRect();
+            const navCX = navRect.left + navRect.width / 2;
+            const navCY = navRect.top + HEADER_HIDDEN_OFFSET + navRect.height / 2;
 
-                const navCX = navRect.left + navRect.width / 2;
-                const navCY = navRect.top + HEADER_HIDDEN_OFFSET + navRect.height / 2;
+            // 스크롤·헤더 상태와 무관하게 항상 뷰포트 중심값 사용
+            // → dy 항상 음수(위쪽) 보장
+            const aboutCX = window.innerWidth / 2;
+            const aboutCY = window.innerHeight / 2;
 
-                // 스크롤·헤더 상태와 무관하게 항상 뷰포트 중심값 사용
-                // → dy 항상 음수(위쪽) 보장
-                const aboutCX = window.innerWidth / 2;
-                const aboutCY = window.innerHeight / 2;
+            const dx = navCX - aboutCX;
+            const dy = navCY - aboutCY;
+            const scaleFactor = navRect.height / aboutRect.height;
 
-                const dx = navCX - aboutCX;
-                const dy = navCY - aboutCY;
-                const scaleFactor = navRect.height / aboutRect.height;
+            const tl1 = gsap.timeline({ paused: true });
+            tl1.to(
+                aboutEl,
+                {
+                    x: dx,
+                    y: dy,
+                    scale: scaleFactor,
+                    color: '#DB6C1B',
+                    ease: 'power1.inOut',
+                    duration: 1,
+                },
+                0
+            );
+            tl1.to(meRef.current, { opacity: 0, ease: 'power1.in', duration: 0.4 }, 0);
 
-                const tl1 = gsap.timeline({ paused: true });
-                tl1.to(
-                    aboutEl,
-                    {
-                        x: dx,
-                        y: dy,
-                        scale: scaleFactor,
-                        color: '#DB6C1B',
-                        ease: 'power1.inOut',
-                        duration: 1,
-                    },
-                    0
-                );
-                tl1.to(meRef.current, { opacity: 0, ease: 'power1.in', duration: 0.4 }, 0);
+            ScrollTrigger.create({
+                trigger: wrapperRef.current,
+                start: 'top top',
+                end: '+=100%',
+                scrub: 1,
+                pin: true,
+                animation: tl1,
+                onUpdate: (self) => {
+                    if (self.progress >= 0.97) {
+                        dispatch(setHeaderVisible(true));
+                    } else {
+                        dispatch(setHeaderVisible(false));
+                    }
+                },
+            });
+
+            // --- Interests animation ---
+            const photos = PHOTO_CONFIGS.map((_, i) => photoRefs.current[i]).filter(Boolean);
+            if (photos.length > 0 && interestsRef.current) {
+                photos.forEach((photo, i) => {
+                    gsap.set(photo, {
+                        opacity: 0,
+                        y: 80,
+                        zIndex: i + 1,
+                    });
+                });
+
+                const tl2 = gsap.timeline({ paused: true });
+                photos.forEach((photo, i) => {
+                    tl2.to(
+                        photo,
+                        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
+                        i * 0.85
+                    );
+                });
 
                 ScrollTrigger.create({
-                    trigger: wrapperRef.current,
+                    trigger: interestsRef.current,
                     start: 'top top',
-                    end: '+=100%',
-                    scrub: 1,
+                    end: '+=500%',
                     pin: true,
-                    animation: tl1,
-                    onUpdate: (self) => {
-                        if (self.progress >= 0.97) {
-                            dispatch(setHeaderVisible(true));
-                        } else {
-                            dispatch(setHeaderVisible(false));
-                        }
+                    scrub: 1,
+                    animation: tl2,
+                });
+            }
+
+            // --- Learning by Doing animation ---
+            const titleEl = learningTitleRef.current;
+            const subEl = learningSubRef.current;
+            const lPhotos = LEARNING_PHOTOS.map((_, i) => learningPhotoRefs.current[i]).filter(
+                Boolean
+            );
+
+            if (titleEl && subEl && learningRef.current) {
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
+                const stagger = 1.5;
+                const photoDuration = 3;
+
+                gsap.set(titleEl, { x: -vw * 1.5 });
+                gsap.set(subEl, { x: vw * 1.5 });
+                lPhotos.forEach((photoEl) => {
+                    gsap.set(photoEl, { y: vh });
+                });
+
+                const tl3 = gsap.timeline({ paused: true });
+
+                tl3.to(titleEl, { x: 0, duration: 1, ease: 'power2.inOut' }, 0);
+                tl3.to(subEl, { x: 0, duration: 1, ease: 'power2.inOut' }, 0);
+
+                lPhotos.forEach((photoEl, i) => {
+                    const photoH = LEARNING_PHOTOS[i].h;
+                    tl3.fromTo(
+                        photoEl,
+                        { y: vh },
+                        { y: -photoH, duration: photoDuration, ease: 'none' },
+                        1.5 + i * stagger
+                    );
+                });
+
+                const totalDur = 1.5 + (lPhotos.length - 1) * stagger + photoDuration;
+                ScrollTrigger.create({
+                    trigger: learningRef.current,
+                    start: 'top top',
+                    end: `+=${Math.round(totalDur * 100)}%`,
+                    pin: true,
+                    scrub: 1,
+                    animation: tl3,
+                });
+            }
+
+            // --- Skills section animation ---
+            const skillsTitleEl = skillsTitleRef.current;
+            const skillIcons = SKILLS.map((_, i) => skillsIconRefs.current[i]).filter(Boolean);
+
+            if (skillsTitleEl && skillsRef.current) {
+                gsap.set(skillsTitleEl, { y: 50, opacity: 0 });
+                if (skillIcons.length > 0) {
+                    gsap.set(skillIcons, { y: 70, opacity: 0 });
+                }
+
+                const tl4 = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: skillsRef.current,
+                        start: 'top 75%',
+                        toggleActions: 'play none none none',
                     },
                 });
 
-                // --- Interests animation ---
-                const photos = PHOTO_CONFIGS.map((_, i) => photoRefs.current[i]).filter(Boolean);
-                if (photos.length > 0 && interestsRef.current) {
-                    photos.forEach((photo, i) => {
-                        gsap.set(photo, {
-                            opacity: 0,
-                            y: 80,
-                            zIndex: i + 1,
-                        });
-                    });
-
-                    const tl2 = gsap.timeline({ paused: true });
-                    photos.forEach((photo, i) => {
-                        tl2.to(
-                            photo,
-                            { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
-                            i * 0.85
-                        );
-                    });
-
-                    ScrollTrigger.create({
-                        trigger: interestsRef.current,
-                        start: 'top top',
-                        end: '+=500%',
-                        pin: true,
-                        scrub: 1,
-                        animation: tl2,
-                    });
-                }
-
-                // --- Learning by Doing animation ---
-                const titleEl = learningTitleRef.current;
-                const subEl = learningSubRef.current;
-                const lPhotos = LEARNING_PHOTOS.map((_, i) => learningPhotoRefs.current[i]).filter(
-                    Boolean
+                tl4.to(skillsTitleEl, {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.9,
+                    ease: 'power3.out',
+                }).to(
+                    skillIcons,
+                    { y: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.4)', stagger: 0.07 },
+                    '-=0.3'
                 );
+            }
+        }); // gsap.context 닫기
 
-                if (titleEl && subEl && learningRef.current) {
-                    const vw = window.innerWidth;
-                    const vh = window.innerHeight;
-                    const stagger = 1.5;
-                    const photoDuration = 3;
-
-                    gsap.set(titleEl, { x: -vw * 1.5 });
-                    gsap.set(subEl, { x: vw * 1.5 });
-                    lPhotos.forEach((photoEl) => {
-                        gsap.set(photoEl, { y: vh });
-                    });
-
-                    const tl3 = gsap.timeline({ paused: true });
-
-                    tl3.to(titleEl, { x: 0, duration: 1, ease: 'power2.inOut' }, 0);
-                    tl3.to(subEl, { x: 0, duration: 1, ease: 'power2.inOut' }, 0);
-
-                    lPhotos.forEach((photoEl, i) => {
-                        const photoH = LEARNING_PHOTOS[i].h;
-                        tl3.fromTo(
-                            photoEl,
-                            { y: vh },
-                            { y: -photoH, duration: photoDuration, ease: 'none' },
-                            1.5 + i * stagger
-                        );
-                    });
-
-                    const totalDur = 1.5 + (lPhotos.length - 1) * stagger + photoDuration;
-                    ScrollTrigger.create({
-                        trigger: learningRef.current,
-                        start: 'top top',
-                        end: `+=${Math.round(totalDur * 100)}%`,
-                        pin: true,
-                        scrub: 1,
-                        animation: tl3,
-                    });
-                }
-
-                // --- Skills section animation ---
-                const skillsTitleEl = skillsTitleRef.current;
-                const skillIcons = SKILLS.map((_, i) => skillsIconRefs.current[i]).filter(Boolean);
-
-                if (skillsTitleEl && skillsRef.current) {
-                    gsap.set(skillsTitleEl, { y: 50, opacity: 0 });
-                    if (skillIcons.length > 0) {
-                        gsap.set(skillIcons, { y: 70, opacity: 0 });
-                    }
-
-                    const tl4 = gsap.timeline({
-                        scrollTrigger: {
-                            trigger: skillsRef.current,
-                            start: 'top 75%',
-                            toggleActions: 'play none none none',
-                        },
-                    });
-
-                    tl4.to(skillsTitleEl, {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.9,
-                        ease: 'power3.out',
-                    }).to(
-                        skillIcons,
-                        { y: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.4)', stagger: 0.07 },
-                        '-=0.3'
-                    );
-                }
-            }); // gsap.context 닫기
-        }); // requestAnimationFrame 닫기
-
-        return () => {
-            cancelAnimationFrame(rafId);
-            if (ctx) ctx.revert();
-        };
+        return () => ctx.revert();
     }, [dispatch]);
 
     const handlePhotoEnter = (i) => {
