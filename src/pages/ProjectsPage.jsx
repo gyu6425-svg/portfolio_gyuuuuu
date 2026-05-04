@@ -56,7 +56,7 @@ const PROJECTS = [
             { label: 'web', url: 'https://gyu-iota.vercel.app/' },
             {
                 label: 'design',
-                url: 'https://www.figma.com/proto/xGVrGcq5hINtWh0vFVfKKv/5%EC%A1%B0-%EB%AF%B8%EB%8B%88%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?page-id=17%3A8&node-id=97-826&viewport=1493%2C-1626%2C0.22&t=3714ttTHx4BFIXpt-1&scaling=min-zoom&content-scaling=fixed',
+                url: 'https://www.figma.com/proto/xGVrGcq5hINtWh0vFVfKKv/5%EC%A1%B0-%EB%AF%B8%EB%8B%88%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?node-id=292-1897&viewport=-2931%2C-3618%2C0.48&t=88bet0LvPCSMOjXG-1&scaling=scale-down-width&content-scaling=fixed&page-id=17%3A8',
             },
         ],
     },
@@ -104,7 +104,7 @@ const PROJECTS = [
             { label: 'web', url: 'https://gyu-iota.vercel.app/' },
             {
                 label: 'design',
-                url: 'https://www.figma.com/proto/xGVrGcq5hINtWh0vFVfKKv/5%EC%A1%B0-%EB%AF%B8%EB%8B%88%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?page-id=17%3A8&node-id=97-826&viewport=1493%2C-1626%2C0.22&t=3714ttTHx4BFIXpt-1&scaling=min-zoom&content-scaling=fixed',
+                url: 'https://www.figma.com/proto/xGVrGcq5hINtWh0vFVfKKv/5%EC%A1%B0-%EB%AF%B8%EB%8B%88%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?node-id=292-1897&viewport=-2931%2C-3618%2C0.48&t=88bet0LvPCSMOjXG-1&scaling=scale-down-width&content-scaling=fixed&page-id=17%3A8',
             },
         ],
     },
