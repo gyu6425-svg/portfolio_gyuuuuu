@@ -518,6 +518,7 @@ export default function AboutPage() {
                         ref={(el) => {
                             learningPhotoRefs.current[i] = el;
                         }}
+                        className="group"
                         style={{
                             position: 'absolute',
                             top: 0,
@@ -526,14 +527,13 @@ export default function AboutPage() {
                             height: `${photo.h}px`,
                             borderRadius: '40px',
                             overflow: 'hidden',
-                            clipPath: 'inset(0 round 40px)',
-                            isolation: 'isolate',
                             zIndex: i + 1,
                         }}
                     >
                         <img
                             src={photo.img}
                             alt=""
+                            className="transition-[filter] duration-300 group-hover:brightness-100"
                             style={{
                                 width: '100%',
                                 height: '100%',
@@ -546,9 +546,11 @@ export default function AboutPage() {
                             draggable={false}
                         />
                         <div
+                            className="transition-opacity duration-300 group-hover:opacity-0"
                             style={{
                                 position: 'absolute',
                                 inset: 0,
+                                borderRadius: '40px',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 justifyContent: 'center',

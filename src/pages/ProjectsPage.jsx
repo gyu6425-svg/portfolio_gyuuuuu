@@ -53,7 +53,7 @@ const PROJECTS = [
         description:
             '정보가 많은 여행 페이지의 특성을 고려하여, 상품 정보를 규격화된 모듈형 카드 UI로 깔끔하게 정돈했습니다. 일관성 있는 아이콘 시스템과 컬러 팔레트를 적용해 서비스의 가독성을 높이고 브랜드 아이덴티티를 명확히 했습니다. 화려한 장식적 요소를 배제하고 콘텐츠 자체에 집중할 수 있는 미니멀한 인터페이스로 사용자 편의성을 높였습니다.',
         tags: [
-            { label: 'web', url: 'https://gyu6425-svg.github.io/gyu/' },
+            { label: 'web', url: 'https://gyu-iota.vercel.app/' },
             {
                 label: 'design',
                 url: 'https://www.figma.com/proto/xGVrGcq5hINtWh0vFVfKKv/5%EC%A1%B0-%EB%AF%B8%EB%8B%88%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?page-id=17%3A8&node-id=97-826&viewport=1493%2C-1626%2C0.22&t=3714ttTHx4BFIXpt-1&scaling=min-zoom&content-scaling=fixed',
@@ -101,7 +101,7 @@ const PROJECTS = [
         description:
             '정보가 많은 여행 페이지의 특성을 고려하여, 상품 정보를 규격화된 모듈형 카드 UI로 깔끔하게 정돈했습니다. 일관성 있는 아이콘 시스템과 컬러 팔레트를 적용해 서비스의 가독성을 높이고 브랜드 아이덴티티를 명확히 했습니다. 화려한 장식적 요소를 배제하고 콘텐츠 자체에 집중할 수 있는 미니멀한 인터페이스로 사용자 편의성을 높였습니다.',
         tags: [
-            { label: 'web', url: 'https://gyu6425-svg.github.io/gyu/' },
+            { label: 'web', url: 'https://gyu-iota.vercel.app/' },
             {
                 label: 'design',
                 url: 'https://www.figma.com/proto/xGVrGcq5hINtWh0vFVfKKv/5%EC%A1%B0-%EB%AF%B8%EB%8B%88%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?page-id=17%3A8&node-id=97-826&viewport=1493%2C-1626%2C0.22&t=3714ttTHx4BFIXpt-1&scaling=min-zoom&content-scaling=fixed',
