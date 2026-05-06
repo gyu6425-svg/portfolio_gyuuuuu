@@ -8,7 +8,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const FONT = 'Pretendard Variable, Pretendard, sans-serif';
 
-// 모든 이미지 동일 사이즈
 const IMG_W = 271.6;
 const IMG_H = 298.424;
 
@@ -19,30 +18,11 @@ const IMAGES = [
     { id: 'works3', src: '/images/works3.png', x: 250, y: 186, zIndex: 1 },
     { id: 'works5', src: '/images/works5.png', x: 590, y: 600, zIndex: 1 },
     { id: 'works4', src: '/images/works4.png', x: 210, y: 690, zIndex: 1 },
-    // works10: 설명 텍스트(top:447)와 겹치는 중앙 이미지 → 흰 텍스트 오버레이 대상
-    { id: 'works10', src: '/images/works10.png', x: 1100, y: 540, zIndex: 10, isMozart: true },
+    { id: 'works10', src: '/images/works10.png', x: 1100, y: 640, zIndex: 10, isMozart: true },
 ];
 
-const WORKS_STYLE = {
-    position: 'absolute',
-    top: '149px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    whiteSpace: 'nowrap',
-};
-
-// 설명 텍스트 위치 (패딩값 기준: 상하 447px / 좌우 522px)
-const DESC_TOP = 447; // px
-const DESC_LEFT = 522; // px (right도 동일)
-
-const descBaseStyle = {
-    fontFamily: FONT,
-    fontSize: '40px',
-    fontWeight: 400,
-    lineHeight: 'normal',
-    margin: 0,
-    textAlign: 'center',
-};
+const DESC_TOP = 447;
+const DESC_LEFT = 522;
 
 const DESC_TEXT = (
     <>
@@ -59,7 +39,6 @@ export const HomeWorksSection = memo(function HomeWorksSection() {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // 흰 패널 슬라이드업 (scrub)
             gsap.timeline({
                 scrollTrigger: {
                     trigger: wrapperRef.current,
@@ -69,7 +48,6 @@ export const HomeWorksSection = memo(function HomeWorksSection() {
                 },
             }).fromTo(panelRef.current, { yPercent: 100 }, { yPercent: 0, ease: 'none' });
 
-            // 완전 진입 → 헤더 라이트 모드
             ScrollTrigger.create({
                 trigger: wrapperRef.current,
                 start: 'top top',
@@ -82,57 +60,27 @@ export const HomeWorksSection = memo(function HomeWorksSection() {
     }, [dispatch]);
 
     return (
-        <div
-            ref={wrapperRef}
-            style={{
-                height: '200vh',
-                position: 'relative',
-                width: '100vw',
-                marginLeft: 'calc(50% - 50vw)',
-            }}
-        >
-            <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
-                {/* GSAP 애니메이션 타겟 */}
-                <div ref={panelRef} style={{ position: 'absolute', inset: 0 }}>
-                    {/* 흰 패널 — 화면 전체 너비 기준 */}
-                    <div
-                        style={{
-                            width: '100vw',
-                            position: 'absolute',
-                            top: 0,
-                            bottom: 0,
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            background: '#FFF',
-                            borderRadius: '100px 100px 0 0',
-                            overflow: 'hidden',
-                        }}
-                    >
+        <div ref={wrapperRef} className="h-[200vh] relative w-screen ml-[calc(50%_-_50vw)]">
+            <div className="sticky top-0 h-screen overflow-hidden">
+                <div ref={panelRef} className="absolute inset-0">
+                    {/* 흰 패널 */}
+                    <div className="w-screen absolute top-0 bottom-0 left-1/2 -translate-x-1/2 bg-white rounded-t-[100px] overflow-hidden">
                         {/* Works 타이틀 */}
                         <h2
-                            style={{
-                                ...WORKS_STYLE,
-                                fontFamily: FONT,
-                                fontSize: '150px',
-                                fontWeight: 700,
-                                color: '#000',
-                                lineHeight: 'normal',
-                                margin: 0,
-                            }}
+                            className="absolute top-[149px] left-1/2 -translate-x-1/2 whitespace-nowrap font-bold text-black leading-normal m-0"
+                            style={{ fontFamily: FONT, fontSize: '150px' }}
                         >
                             Works
                         </h2>
 
-                        {/* 설명 텍스트 (gray #555, z-index 5) */}
+                        {/* 설명 텍스트 */}
                         <p
+                            className="absolute text-[40px] font-normal leading-normal m-0 text-center text-[#555] z-[5]"
                             style={{
-                                ...descBaseStyle,
-                                position: 'absolute',
+                                fontFamily: FONT,
                                 top: `${DESC_TOP}px`,
                                 left: `${DESC_LEFT}px`,
                                 right: `${DESC_LEFT}px`,
-                                color: '#555',
-                                zIndex: 5,
                             }}
                         >
                             {DESC_TEXT}
@@ -142,41 +90,31 @@ export const HomeWorksSection = memo(function HomeWorksSection() {
                         {IMAGES.map((img) => (
                             <div
                                 key={img.id}
+                                className="absolute rounded-[20px] overflow-hidden"
                                 style={{
-                                    position: 'absolute',
                                     left: `${img.x}px`,
                                     top: `${img.y}px`,
                                     width: `${IMG_W}px`,
                                     height: `${IMG_H}px`,
-                                    borderRadius: '20px',
-                                    overflow: 'hidden',
                                     zIndex: img.zIndex,
                                 }}
                             >
                                 <img
                                     src={img.src}
                                     alt=""
-                                    style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        objectFit: 'cover',
-                                        display: 'block',
-                                    }}
+                                    className="w-full h-full object-cover block"
                                     draggable={false}
                                 />
 
-                                {/* 흰 텍스트 오버레이 — works10(Mozart) 안에서만 클립 */}
+                                {/* 흰 텍스트 오버레이 — works10(Mozart) 전용 */}
                                 {img.isMozart && (
                                     <p
+                                        className="absolute text-[40px] font-normal leading-normal m-0 text-center text-white pointer-events-none"
                                         style={{
-                                            ...descBaseStyle,
-                                            position: 'absolute',
-                                            // 패널 기준 텍스트 위치 → 이미지 기준으로 offset
-                                            top: DESC_TOP - img.y, // 447 - 380 = 67px
-                                            left: DESC_LEFT - img.x, // 522 - 850 = -328px
-                                            width: `${1920 - DESC_LEFT * 2}px`, // 876px
-                                            color: '#FFF',
-                                            pointerEvents: 'none',
+                                            fontFamily: FONT,
+                                            top: DESC_TOP - img.y,
+                                            left: DESC_LEFT - img.x,
+                                            width: `${1920 - DESC_LEFT * 2}px`,
                                         }}
                                     >
                                         {DESC_TEXT}
