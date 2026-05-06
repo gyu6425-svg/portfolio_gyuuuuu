@@ -16,18 +16,19 @@ const IMG_H = 298.424;
 const IMAGES = [
     { id: 'works1', src: '/images/works1.png', x: 1440, y: 200, zIndex: 1 },
     { id: 'works2', src: '/images/works2.png', x: 1520, y: 700, zIndex: 1 },
-    { id: 'works3', src: '/images/works3.png', x: 230, y: 186, zIndex: 1 },
-    { id: 'works5', src: '/images/works5.png', x: 450, y: 600, zIndex: 1 },
-    { id: 'works4', src: '/images/works4.png', x: 50, y: 690, zIndex: 1 },
+    { id: 'works3', src: '/images/works3.png', x: 250, y: 186, zIndex: 1 },
+    { id: 'works5', src: '/images/works5.png', x: 590, y: 600, zIndex: 1 },
+    { id: 'works4', src: '/images/works4.png', x: 210, y: 690, zIndex: 1 },
     // works10: 설명 텍스트(top:447)와 겹치는 중앙 이미지 → 흰 텍스트 오버레이 대상
-    { id: 'works10', src: '/images/works10.png', x: 1000, y: 540, zIndex: 10, isMozart: true },
+    { id: 'works10', src: '/images/works10.png', x: 1100, y: 540, zIndex: 10, isMozart: true },
 ];
 
-// Works 타이틀 위치 (패딩값 기준: top 149 / right 734 / bottom 1522 / left 623)
 const WORKS_STYLE = {
     position: 'absolute',
     top: '149px',
-    left: '734px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    whiteSpace: 'nowrap',
 };
 
 // 설명 텍스트 위치 (패딩값 기준: 상하 447px / 좌우 522px)
