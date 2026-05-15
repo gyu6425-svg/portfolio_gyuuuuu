@@ -491,6 +491,7 @@ export default function AboutPage() {
                             textAlign: 'center',
                             lineHeight: 1,
                             whiteSpace: 'nowrap',
+                            marginRight: '40px',
                         }}
                     >
                         Learning by Doing
@@ -505,6 +506,7 @@ export default function AboutPage() {
                             margin: 0,
                             textAlign: 'center',
                             whiteSpace: 'nowrap',
+                            // marginLeft: '50px',
                         }}
                     >
                         직접 경험하며 성장한 저의 과정을 소개합니다.
