@@ -475,7 +475,7 @@ export default function AboutPage() {
                         flexDirection: 'column',
                         alignItems: 'center',
                         gap: '28px',
-                        zIndex: 10,
+                        zIndex: 1,
                         pointerEvents: 'none',
                         width: '100%',
                     }}
@@ -491,7 +491,7 @@ export default function AboutPage() {
                             textAlign: 'center',
                             lineHeight: 1,
                             whiteSpace: 'nowrap',
-                            marginRight: '40px',
+                            marginRight: '44px',
                         }}
                     >
                         Learning by Doing
@@ -529,7 +529,7 @@ export default function AboutPage() {
                             height: `${photo.h}px`,
                             borderRadius: '40px',
                             overflow: 'hidden',
-                            zIndex: i + 1,
+                            zIndex: 10 + i,
                         }}
                     >
                         <img
