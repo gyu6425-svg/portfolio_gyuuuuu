@@ -7,7 +7,6 @@ const FONT_AL = 'Alkatra, cursive';
 const CARD_W = 388;
 const CARD_H = 426.32;
 const CARD_GAP = 100;
-const SINGLE_SET_H = 3 * (CARD_H + CARD_GAP); // 1578.96
 
 // tags: [{ label: 'web' | 'design', url: '링크 주소' }]
 // url을 비워두면 칩이 비활성화 상태로 표시됩니다
@@ -204,35 +203,82 @@ const PROJECTS = [
             },
         ],
     },
+    {
+        id: 13,
+        image: '/images/project/works13.png',
+        title: 'PLANP',
+        subtitle: 'J들의 여행 계획',
+        highlightWord: '',
+        description:
+            '"계획하기 귀찮은 MBTI P 성향의 사람들도 클릭 몇 번으로 J처럼 계획할 수 있도록 PlanP에서 도와드리겠습니다.',
+        tags: [
+            { label: 'web', url: 'https://plan-p-three.vercel.app' },
+            {
+                label: 'design',
+                url: 'https://www.figma.com/proto/IYv9roJGb8V4WLDvg5mRo4/%EC%A0%9C%EB%AA%A9-%EC%97%86%EC%9D%8C?node-id=324-483&viewport=-2788%2C8%2C0.05&t=AlBv6Z3clKC3MNND-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1',
+            },
+        ],
+    },
+    {
+        id: 14,
+        image: '/images/project/works14.png',
+        title: 'PLANP',
+        subtitle: 'J들의 여행 계획',
+        highlightWord: '',
+        description:
+            '"계획하기 귀찮은 MBTI P 성향의 사람들도 클릭 몇 번으로 J처럼 계획할 수 있도록 PlanP에서 도와드리겠습니다."',
+        tags: [
+            { label: 'web', url: 'https://plan-p-three.vercel.app' },
+            {
+                label: 'design',
+                url: 'https://www.figma.com/proto/IYv9roJGb8V4WLDvg5mRo4/%EC%A0%9C%EB%AA%A9-%EC%97%86%EC%9D%8C?node-id=324-483&viewport=-2788%2C8%2C0.05&t=AlBv6Z3clKC3MNND-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1',
+            },
+        ],
+    },
 ];
 
-const COLUMNS_CONFIG = [
+const BASE_COLUMNS_CONFIG = [
     { id: 0, indices: [0, 1, 2], direction: 'down', duration: 20 },
     { id: 1, indices: [3, 4, 5], direction: 'up', duration: 24 },
     { id: 2, indices: [6, 7, 8], direction: 'down', duration: 18 },
     { id: 3, indices: [9, 10, 11], direction: 'up', duration: 22 },
 ];
 
+const COLUMNS_CONFIG = BASE_COLUMNS_CONFIG.map((column) => ({
+    ...column,
+    indices: [...column.indices],
+}));
+
+PROJECTS.slice(12).forEach((_, index) => {
+    const columnIndex = index % COLUMNS_CONFIG.length;
+    COLUMNS_CONFIG[columnIndex].indices.push(index + 12);
+});
+
 const InfiniteColumn = memo(function InfiniteColumn({ config, onCardClick }) {
     const trackRef = useRef(null);
-    const cards = config.indices.map((i) => PROJECTS[i]);
+    const cards = config.indices.map((i) => PROJECTS[i]).filter(Boolean);
     const isDown = config.direction === 'down';
+    const singleSetH = cards.length * (CARD_H + CARD_GAP);
 
     useEffect(() => {
+        if (!trackRef.current || singleSetH === 0) return undefined;
+
         const tween = gsap.fromTo(
             trackRef.current,
-            { y: isDown ? -SINGLE_SET_H : 0 },
-            { y: isDown ? 0 : -SINGLE_SET_H, duration: config.duration, ease: 'none', repeat: -1 }
+            { y: isDown ? -singleSetH : 0 },
+            { y: isDown ? 0 : -singleSetH, duration: config.duration, ease: 'none', repeat: -1 }
         );
         return () => tween.kill();
-    }, [isDown, config.duration]);
+    }, [isDown, config.duration, singleSetH]);
+
+    if (cards.length === 0) return null;
 
     return (
         <div style={{ width: CARD_W, height: '100%', overflow: 'hidden', flexShrink: 0 }}>
             <div ref={trackRef} style={{ display: 'flex', flexDirection: 'column', gap: CARD_GAP }}>
                 {[...cards, ...cards].map((card, i) => (
                     <div
-                        key={i}
+                        key={`${card.id}-${i}`}
                         onClick={() => onCardClick(card)}
                         style={{
                             width: CARD_W,
