@@ -43,7 +43,7 @@ const PROJECT_SECTIONS = [
         ],
     },
     {
-        title: 'Personal Project',
+        title: 'Personal Project2',
         description: (
             <>
                 효율적인 결제 동선과 최적화된 시각 정보를
@@ -67,7 +67,7 @@ const PROJECT_SECTIONS = [
         ],
     },
     {
-        title: 'Personal Project2',
+        title: 'Personal Project1',
         description: (
             <>
                 여행자가 다양한 정보를 한 화면에서 탐색하고
@@ -286,13 +286,13 @@ export function HomeProjectsSection() {
     return (
         <section className="w-full bg-white">
             <div className="mx-auto min-h-[2928px] w-[1700px] max-w-[calc(100vw-80px)] py-[180px] max-[960px]:min-h-0 max-[960px]:max-w-[calc(100vw-40px)] max-[960px]:py-[120px]">
-                <ProjectBlock project={PROJECT_SECTIONS[0]} />
+                <ProjectBlock project={PROJECT_SECTIONS[2]} />
                 <ProjectBlock
                     project={PROJECT_SECTIONS[1]}
                     className="mt-[396px] max-[960px]:mt-[180px]"
                 />
                 <ProjectBlock
-                    project={PROJECT_SECTIONS[2]}
+                    project={PROJECT_SECTIONS[0]}
                     className="mt-[396px] max-[960px]:mt-[180px]"
                 />
             </div>
