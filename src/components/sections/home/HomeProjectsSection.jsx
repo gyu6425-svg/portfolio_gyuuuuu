@@ -11,6 +11,13 @@ const PROJECT_TOOLS = [
     { src: '/images/javascript.png', alt: 'JavaScript' },
 ];
 
+const PERSONAL_PROJECT_TOOLS = [
+    { src: '/images/react.png', alt: 'React' },
+    { src: '/images/figma.png', alt: 'Figma' },
+    { src: '/images/photoshop.png', alt: 'Photoshop' },
+    { src: '/images/typescript_logo.png', alt: 'TypeScript' },
+];
+
 const PROJECT_SECTIONS = [
     {
         title: 'Team Project',
@@ -50,6 +57,7 @@ const PROJECT_SECTIONS = [
         detailImages: ['/images/sol2.png', '/images/sol3.png'],
         copyOffset: { x: 0, y: 0 },
         reverse: true,
+        tools: PERSONAL_PROJECT_TOOLS,
         stacks: [
             { label: 'Web', url: 'https://8seconds-renewal.vercel.app/' },
             {
@@ -58,11 +66,37 @@ const PROJECT_SECTIONS = [
             },
         ],
     },
+    {
+        title: 'Personal Project2',
+        description: (
+            <>
+                여행자가 다양한 정보를 한 화면에서 탐색하고
+                <br />
+                예약 플랫폼으로 빠르게 이동할 수 있도록 만든
+                <br />
+                여행 정보 통합 서비스입니다.
+            </>
+        ),
+        mainImage: '/images/sol1-1.png',
+        detailImages: ['/images/sol1-2.png', '/images/sol1-3.png'],
+        copyOffset: { x: 0, y: 0 },
+        titleOffset: { x: -22, y: 0 },
+        tools: PERSONAL_PROJECT_TOOLS,
+        stacks: [
+            { label: 'Web', url: 'https://plan-p-three.vercel.app' },
+            {
+                label: 'Design',
+                url: 'https://www.figma.com/proto/IYv9roJGb8V4WLDvg5mRo4/%EC%A0%9C%EB%AA%A9-%EC%97%86%EC%9D%8C?node-id=324-483&viewport=-2788%2C8%2C0.05&t=AlBv6Z3clKC3MNND-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1',
+            },
+        ],
+    },
 ];
 
 const ProjectBlock = memo(function ProjectBlock({ project, className = '' }) {
     const isReverse = Boolean(project.reverse);
     const { copyOffset = { x: 0, y: 0 } } = project;
+    const { titleOffset = { x: 0, y: 0 } } = project;
+    const tools = project.tools || PROJECT_TOOLS;
 
     const containerRef = useRef(null);
     const mainImageRef = useRef(null);
@@ -151,10 +185,13 @@ const ProjectBlock = memo(function ProjectBlock({ project, className = '' }) {
                         } max-[960px]:items-start max-[960px]:text-left`}
                     >
                         <h2
-                            className={`max-w-none text-[60px] font-semibold leading-none text-black ${
+                            className={`max-w-none whitespace-nowrap text-[60px] font-semibold leading-none text-black ${
                                 isReverse ? 'text-left' : 'text-right'
                             } max-[960px]:text-left`}
-                            style={{ fontFamily: 'Pretendard Variable, Pretendard, sans-serif' }}
+                            style={{
+                                fontFamily: 'Pretendard Variable, Pretendard, sans-serif',
+                                transform: `translate(${titleOffset.x}px, ${titleOffset.y}px)`,
+                            }}
                         >
                             {project.title}
                         </h2>
@@ -203,7 +240,7 @@ const ProjectBlock = memo(function ProjectBlock({ project, className = '' }) {
                         <div
                             className={`flex items-center gap-3 ${isReverse ? 'justify-start' : 'justify-end'}`}
                         >
-                            {PROJECT_TOOLS.map((tool) => (
+                            {tools.map((tool) => (
                                 <span
                                     key={`${project.title}-${tool.alt}`}
                                     className="flex h-[50px] w-[50px] items-center justify-center p-[7px]"
@@ -252,6 +289,10 @@ export function HomeProjectsSection() {
                 <ProjectBlock project={PROJECT_SECTIONS[0]} />
                 <ProjectBlock
                     project={PROJECT_SECTIONS[1]}
+                    className="mt-[396px] max-[960px]:mt-[180px]"
+                />
+                <ProjectBlock
+                    project={PROJECT_SECTIONS[2]}
                     className="mt-[396px] max-[960px]:mt-[180px]"
                 />
             </div>
