@@ -215,7 +215,7 @@ const PROJECTS = [
             { label: 'web', url: 'https://plan-p-three.vercel.app' },
             {
                 label: 'design',
-                url: 'https://www.figma.com/proto/IYv9roJGb8V4WLDvg5mRo4/%EC%A0%9C%EB%AA%A9-%EC%97%86%EC%9D%8C?node-id=324-483&viewport=-2788%2C8%2C0.05&t=AlBv6Z3clKC3MNND-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1',
+                url: 'https://www.figma.com/proto/IYv9roJGb8V4WLDvg5mRo4/%EC%A0%9C%EB%AA%A9-%EC%97%86%EC%9D%8C?node-id=426-36999&viewport=-1353%2C76%2C0.03&t=Sp7v7WRpliDSmXKv-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1',
             },
         ],
     },
@@ -231,7 +231,7 @@ const PROJECTS = [
             { label: 'web', url: 'https://plan-p-three.vercel.app' },
             {
                 label: 'design',
-                url: 'https://www.figma.com/proto/IYv9roJGb8V4WLDvg5mRo4/%EC%A0%9C%EB%AA%A9-%EC%97%86%EC%9D%8C?node-id=324-483&viewport=-2788%2C8%2C0.05&t=AlBv6Z3clKC3MNND-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1',
+                url: 'https://www.figma.com/proto/IYv9roJGb8V4WLDvg5mRo4/%EC%A0%9C%EB%AA%A9-%EC%97%86%EC%9D%8C?node-id=426-36999&viewport=-1353%2C76%2C0.03&t=Sp7v7WRpliDSmXKv-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1',
             },
         ],
     },
